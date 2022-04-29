@@ -23,9 +23,11 @@ if __name__ == '__main__':
     # df = merge()
     # print(df)
 
-    # s = GService()
-    # s.list()
-
+    # s = GService('admin')
+    # user_list = s.list()
+    # for u in user_list:
+    #     if '@edu.itspiemonte.it' in u['primaryEmail']:
+    #         print(u['name']['givenName'])
     # get_random_pwd(10)
 
     # conn = pyodbc.connect(
@@ -69,8 +71,18 @@ if __name__ == '__main__':
     # nonGUsers_df = getNonGUsers(inno_users_df, g_users_df)
     # # print(nonGUsers_df)
     # test_df = pd.DataFrame({'name': ['federica'], 'surname': ['anzoise']})
-    test_df = pd.DataFrame({'name': ['alessandro', 'haji', 'luca'], 'surname': ['cortelazzo', 'bayram', 'di nunno']})
+    # test_df = pd.DataFrame({'name': ['haji'], 'surname': ['bayram']})
 
-    s = GService('admin')
+    # s = GService('admin')
     # s.create(users=test_df)
     # s.suspend()
+
+    s = GService('admin')
+    user_list = s.list()
+    for u in user_list:
+        if 'adrian.munteanu@edu.itspiemonte.it' in u['primaryEmail']:
+            print(u)
+
+    # s = GService('license')
+    # s.list()
+    # s.create()

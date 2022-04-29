@@ -49,5 +49,5 @@ def getNonGUsers(db_df, g_df):
     #### IN DB, NOT GM
     non_gmail_users_df = db_df.merge(g_df, left_on='googleMailAllievo', right_on='email', how='left')
     non_gmail_users_df = non_gmail_users_df[non_gmail_users_df['Allievo'].isna()].reset_index(drop=True)
-    # non_gmail_users_df[['name', 'surname', 'email']].to_excel('Non_DB_Gmail_Users.xlsx', index = False)
+    non_gmail_users_df[['name', 'surname', 'email']].to_excel('Non_DB_Gmail_Users.xlsx', index=False)
     return non_gmail_users_df

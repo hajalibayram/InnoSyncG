@@ -14,12 +14,12 @@ class GService:
     name = None
     service = None
     SCOPES = ['https://www.googleapis.com/auth/classroom.courses',
-              'https://www.googleapis.com/auth/admin.directory.user']
+              'https://www.googleapis.com/auth/admin.directory.user',
+              'https://www.googleapis.com/auth/apps.licensing']
     CREDENTIALS_FILE = 'credentials.json'
 
-    def __init__(self, name='classroom'):
+    def __init__(self, name='admin'):
         self.name = name
-
         creds = None
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
@@ -40,14 +40,16 @@ class GService:
 
         if self.name == 'classroom':
             self.service = build('classroom', 'v1', credentials=creds)
-        else:
+        elif self.name == 'admin':
             self.service = build('admin', 'directory_v1', credentials=creds)
+        else:
+            self.service = build('licensing', 'v1', credentials=creds)
         # return cls.service
 
     def getService(self):
         return self.service
 
-    def list(self):
+    def list(self, **kwargs):
         if self.name == 'classroom':
             # Call the Classroom API
             print('Getting list of classes>>>>')
@@ -65,7 +67,7 @@ class GService:
                     break
             # print(classrooms_all)
             return classrooms_all
-        else:
+        elif self.name == 'admin':
             # Call the Admin API
             print('Getting list of users>>>>')
 
@@ -82,6 +84,13 @@ class GService:
                     break
             # print(users_all)
             return users_all
+        if kwargs.get('isLicense'):
+            print('Getting list of licenses>>>>')
+
+            lic = self.service.licenseAssignments().get(productId='101031',
+                                                        userId=kwargs.get('userId'),
+                                                        skuId='1010310008').execute()
+            print(lic)
 
     def emailExist(self, email, domain, username, number=1):
         try:
@@ -141,11 +150,22 @@ class GService:
                     "isDelegatedAdmin": False,
                     "password": pwd,
                     "changePasswordAtNextLogin": True,
-                    "kind": "admin#directory#user"
+                    "kind": "admin#directory#user",
+                    "orgUnitPath": "/itspiemonte.it/edu.itspiemonte.it",
+                    "languages": [
+                        {
+                            "languageCode": "it",
+                            "preference": "preferred"
+                        }
+                    ],
+                    # "recoveryEmail": "",
+                    # "recoveryPhone": ""
                 }
                 # self.service.users().insert(body=req_body).execute()
-        pd.DataFrame({'uname': emails, 'pwd': pwds}).to_excel('upwd.xlsx', index=False)
-        print('Created: \n', emails)
+            pd.DataFrame({'uname': emails, 'pwd': pwds}).to_excel('upwd.xlsx', index=False)
+            print('Created: \n', emails)
+
+            # setLicense(email)
 
     def suspend(self, **kwargs):
         if self.name == 'admin':
@@ -153,5 +173,29 @@ class GService:
             users = sus_users_df['email']
             for user in users:
                 user = user.strip()
-                self.service.users().update(userKey=user, body={'suspended':True}).execute()
+                self.service.users().update(userKey=user, body={'suspended': True}).execute()
                 print(user, ' is suspended')
+
+    def setLicence(self, userId):
+        req_body = {
+            'userId': userId
+        }
+        lic = self.service.licenseAssignments().insert(productId='101031',
+                                                       skuId='1010310008',
+                                                       body=req_body).execute()
+        print('License is created for ', userId)
+        return lic
+
+    def deleteLicence(self, userId):
+        req_body = {
+            'userId': userId
+        }
+        try:
+            lic = self.service.licenseAssignments().delete(productId='101031',
+                                                           skuId='1010310008',
+                                                           body=req_body).execute()
+            print('License is deleted for ', userId)
+            return lic
+
+        except HttpError:
+            print('Alert! Error occurred while deleting license from', userId)
