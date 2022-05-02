@@ -1,7 +1,29 @@
+import datetime
+import logging
+import os
 import string
 import random
 
 import pandas as pd
+
+
+def setup_log():
+    start_time = datetime.datetime.now()
+    logs_folder = "logs/"
+    logs_file = f"{logs_folder}/{start_time.strftime('%Y-%m-%d_%H-%M')}.log"
+
+    if os.path.exists(logs_folder):
+        print(FileExistsError(f"{logs_folder} already exists!"))
+    else:
+        os.makedirs(logs_folder, exist_ok=True)
+    # base_formatter = logging.Formatter('%(asctime)s   %(message)s', "%Y-%m-%d %H:%M")
+    logger = logging.getLogger('')
+    logger.setLevel(logging.DEBUG)
+
+    open(logs_file, 'a').close()
+
+    logging.basicConfig(filename=logs_file, filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.info(f"Log file: {start_time.strftime('%Y-%m-%d_%H-%M')} \n \n ")
 
 
 def get_random_pwd(length):

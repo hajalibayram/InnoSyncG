@@ -1,3 +1,4 @@
+import logging
 import os
 
 import pandas as pd
@@ -53,6 +54,8 @@ class GService:
         if self.name == 'classroom':
             # Call the Classroom API
             print('Getting list of classes>>>>')
+            logging.info('Getting list of classes>>>>')
+
             #     results = service.courses().list(pageSize=10).execute()
             #     courses = results.get('courses', [])
 
@@ -70,6 +73,7 @@ class GService:
         elif self.name == 'admin':
             # Call the Admin API
             print('Getting list of users>>>>')
+            logging.info('Getting list of users>>>>')
 
             users_all = []
             page_token = None
@@ -86,11 +90,14 @@ class GService:
             return users_all
         if kwargs.get('isLicense'):
             print('Getting list of licenses>>>>')
+            logging.info('Getting list of licenses>>>>')
 
             lic = self.service.licenseAssignments().get(productId='101031',
                                                         userId=kwargs.get('userId'),
                                                         skuId='1010310008').execute()
             print(lic)
+            logging.info(lic)
+
 
     def emailExist(self, email, domain, username, number=1):
         try:
@@ -103,6 +110,8 @@ class GService:
             return email, username
         except Exception as e:
             print(e)
+            logging.error(e)
+
 
     def create(self, **kwargs):
         if self.name == 'admin':
@@ -132,6 +141,7 @@ class GService:
                 username = name + '.' + surname
                 email = username + domain
                 print(email)
+                logging.info(email)
                 # print(self.service.users().get(userKey=email).execute())
 
                 email, username = self.emailExist(email, domain, username)
@@ -164,6 +174,8 @@ class GService:
                 # self.service.users().insert(body=req_body).execute()
             pd.DataFrame({'uname': emails, 'pwd': pwds}).to_excel('upwd.xlsx', index=False)
             print('Created: \n', emails)
+            logging.info('Created: \n', emails)
+
 
             # setLicense(email)
 
@@ -175,6 +187,8 @@ class GService:
                 user = user.strip()
                 self.service.users().update(userKey=user, body={'suspended': True}).execute()
                 print(user, ' is suspended')
+                logging.info(user, ' is suspended')
+
 
     def setLicence(self, userId):
         req_body = {
@@ -184,6 +198,7 @@ class GService:
                                                        skuId='1010310008',
                                                        body=req_body).execute()
         print('License is created for ', userId)
+        logging.info('License is created for ', userId)
         return lic
 
     def deleteLicence(self, userId):
@@ -195,7 +210,10 @@ class GService:
                                                            skuId='1010310008',
                                                            body=req_body).execute()
             print('License is deleted for ', userId)
+            logging.info('License is deleted for ', userId)
+
             return lic
 
         except HttpError:
             print('Alert! Error occurred while deleting license from', userId)
+            logging.error('Alert! Error occurred while deleting license from', userId)

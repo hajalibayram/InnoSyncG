@@ -7,7 +7,7 @@ import pyodbc
 
 from GService import GService
 from merger import merge
-from util import get_random_pwd, reformat_GUsers, getNonGUsers
+from util import get_random_pwd, reformat_GUsers, getNonGUsers, setup_log
 
 import json
 
@@ -20,6 +20,7 @@ username = config_json['username']
 password = config_json['password']
 
 if __name__ == '__main__':
+    setup_log()
     # df = merge()
     # print(df)
 
