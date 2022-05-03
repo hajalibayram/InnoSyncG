@@ -8,7 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from util import get_random_pwd
+from util import get_random_pwd, strip_accents
 
 
 class GService:
@@ -17,6 +17,7 @@ class GService:
     SCOPES = ['https://www.googleapis.com/auth/classroom.courses',
               'https://www.googleapis.com/auth/admin.directory.user',
               'https://www.googleapis.com/auth/apps.licensing']
+
     CREDENTIALS_FILE = 'credentials.json'
 
     def __init__(self, name='admin'):
@@ -98,7 +99,6 @@ class GService:
             print(lic)
             logging.info(lic)
 
-
     def emailExist(self, email, domain, username, number=1):
         try:
             if self.service.users().get(userKey=email).execute()['kind'] == 'admin#directory#user':
@@ -111,7 +111,6 @@ class GService:
         except Exception as e:
             print(e)
             logging.error(e)
-
 
     def create(self, **kwargs):
         if self.name == 'admin':
@@ -127,18 +126,17 @@ class GService:
                 name = name.strip().replace("\"", "")
 
                 surname = u['surname']
-
-                if ' ' in surname:
-                    if surname.startswith('d') or surname.startswith('al'):
-                        surname = u['surname']
-                    else:
-                        surname = surname.split(' ')[0]
-
                 surname = surname.strip().replace("\'", "")
                 surname = surname.strip().replace(" ", "")
                 surname = surname.strip().replace("\"", "")
 
-                username = name + '.' + surname
+                if ' ' in surname:
+                    if surname.startswith('di') or surname.startswith('de') or surname.startswith('al'):
+                        surname = u['surname']
+                    else:
+                        surname = surname.split(' ')[0]
+
+                username = strip_accents(name + '.' + surname)
                 email = username + domain
                 print(email)
                 logging.info(email)
@@ -171,31 +169,42 @@ class GService:
                     # "recoveryEmail": "",
                     # "recoveryPhone": ""
                 }
+                if u['email']:
+                    req_body['recoveryEmail'] = u['email']
+                if u['phone']:
+                    req_body['recoveryPhone'] = u['phone']
+
                 # self.service.users().insert(body=req_body).execute()
             pd.DataFrame({'uname': emails, 'pwd': pwds}).to_excel('upwd.xlsx', index=False)
             print('Created: \n', emails)
             logging.info('Created: \n', emails)
 
-
             # setLicense(email)
 
-    def suspend(self, **kwargs):
-        if self.name == 'admin':
-            sus_users_df = pd.read_excel('Suspended_users.xlsx')
-            users = sus_users_df['email']
-            for user in users:
+    def suspend(self, users, **kwargs):
+        for user in users:
+            try:
                 user = user.strip()
                 self.service.users().update(userKey=user, body={'suspended': True}).execute()
                 print(user, ' is suspended')
-                logging.info(user, ' is suspended')
+                logging.info(user + ' is suspended')
+            except:
+                continue
 
+    def delete(self, **kwargs):
+        if kwargs.get('users'):
+            for user in kwargs.get('users'):
+                user = user.strip()
+                self.service.users().delete(userKey=user).execute()
+                print(user, ' is suspended')
+                logging.info(user + ' is suspended')
 
     def setLicence(self, userId):
         req_body = {
             'userId': userId
         }
         lic = self.service.licenseAssignments().insert(productId='101031',
-                                                       skuId='1010310008',
+                                                       skuId='1010310008',  # Education Plus
                                                        body=req_body).execute()
         print('License is created for ', userId)
         logging.info('License is created for ', userId)
@@ -207,7 +216,7 @@ class GService:
         }
         try:
             lic = self.service.licenseAssignments().delete(productId='101031',
-                                                           skuId='1010310008',
+                                                           skuId='1010310008',  # Education Plus
                                                            body=req_body).execute()
             print('License is deleted for ', userId)
             logging.info('License is deleted for ', userId)

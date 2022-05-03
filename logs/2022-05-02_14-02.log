@@ -1,0 +1,15 @@
+root - INFO - Log file: 2022-05-02_14-02 
+ 
+ 
+googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/abello.marco%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/adriano.ghizzoni%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/aimar.paolo%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alberto.mazzucchelli%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alessandro.beltrame%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alessandro.cortelazzo%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alessandro.garza%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alessandro.moscone%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alessandro.ravarino%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alessandro.romeo%40edu.itspiemonte.it?alt=json
+googleapiclient.discovery - DEBUG - URL being requested: PUT https://admin.googleapis.com/admin/directory/v1/users/alessandro.sottile%40edu.itspiemonte.it?alt=json

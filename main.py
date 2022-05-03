@@ -78,12 +78,20 @@ if __name__ == '__main__':
     # s.create(users=test_df)
     # s.suspend()
 
-    s = GService('admin')
-    user_list = s.list()
-    for u in user_list:
-        if 'adrian.munteanu@edu.itspiemonte.it' in u['primaryEmail']:
-            print(u)
+    # s = GService('admin')
+    # user_list = s.list()
+    # for u in user_list:
+    #     if 'adrian.munteanu@edu.itspiemonte.it' in u['primaryEmail']:
+    #         print(u)
 
-    # s = GService('license')
-    # s.list()
-    # s.create()
+    ### SUSPEND USERS
+    # s = GService('admin')
+    # sus_users_df = pd.read_csv('Suspend.csv')
+    # users = sus_users_df['Member Email']
+    # s.suspend(users)
+
+    ### DELETE USERS
+    # s = GService('admin')
+    # sus_users_df = pd.read_csv('Delete.csv')
+    # users = sus_users_df['Member Email']
+    # s.delete(users)

@@ -5,6 +5,7 @@ import string
 import random
 
 import pandas as pd
+import unicodedata
 
 
 def setup_log():
@@ -73,3 +74,8 @@ def getNonGUsers(db_df, g_df):
     non_gmail_users_df = non_gmail_users_df[non_gmail_users_df['Allievo'].isna()].reset_index(drop=True)
     non_gmail_users_df[['name', 'surname', 'email']].to_excel('Non_DB_Gmail_Users.xlsx', index=False)
     return non_gmail_users_df
+
+
+def strip_accents(s):
+    return ''.join(c for c in unicodedata.normalize('NFD', s)
+                   if unicodedata.category(c) != 'Mn')

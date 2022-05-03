@@ -1,5 +1,6 @@
 token.json
 *.xlsx
+*.csv
 Candidati.csv
 config.json
 Schema.pdf
